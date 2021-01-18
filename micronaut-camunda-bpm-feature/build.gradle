@@ -33,7 +33,7 @@ dependencies {
     api("io.micronaut.sql:micronaut-jdbc-hikari")
 
     // Test
-    testImplementation("org.mockito:mockito-core:3.7.0")
+    testImplementation("org.mockito:mockito-core:3.7.7")
     testImplementation("ch.qos.logback:logback-classic")
     testRuntimeOnly("com.h2database:h2")
 }
