@@ -20,14 +20,14 @@ Do you want to try it out? Please jump to the [Getting Started](#getting-started
 
 Do you want to contribute to our open source project? Please read the [Contribution Guidelines](CONTRIBUTING.md) and [contact us](#contact).
 
-If you also want to run your External Task Client on Micronaut, have a look at the open source project [micronaut-camunda-external-client](https://github.com/NovatecConsulting/micronaut-camunda-external-client).
+If you also want to run your External Task Client on Micronaut, have a look at the open source project [micronaut-camunda-external-client](https://github.com/camunda-community-hub/micronaut-camunda-external-client).
 
 Micronaut + Camunda = :heart:
 
-[![Release](https://img.shields.io/github/v/release/NovatecConsulting/micronaut-camunda-bpm.svg)](https://github.com/NovatecConsulting/micronaut-camunda-bpm/releases)
+[![Release](https://img.shields.io/github/v/release/camunda-community-hub/micronaut-camunda-bpm.svg)](https://github.com/camunda-community-hub/micronaut-camunda-bpm/releases)
 [![License](https://img.shields.io/:license-apache-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Continuous Integration](https://github.com/NovatecConsulting/micronaut-camunda-bpm/workflows/Continuous%20Integration/badge.svg)](https://github.com/NovatecConsulting/micronaut-camunda-bpm/actions)
-[![GitHub Discussions](https://img.shields.io/badge/Forum-GitHub_Discussions-blue)](https://github.com/NovatecConsulting/micronaut-camunda-bpm/discussions)
+[![Continuous Integration](https://github.com/camunda-community-hub/micronaut-camunda-bpm/workflows/Continuous%20Integration/badge.svg)](https://github.com/camunda-community-hub/micronaut-camunda-bpm/actions)
+[![GitHub Discussions](https://img.shields.io/badge/Forum-GitHub_Discussions-blue)](https://github.com/camunda-community-hub/micronaut-camunda-bpm/discussions)
 
 [![](https://img.shields.io/badge/Community%20Extension-An%20open%20source%20community%20maintained%20project-FF4700)](https://github.com/camunda-community-hub/community)
 [![](https://img.shields.io/badge/Lifecycle-Stable-brightgreen)](https://github.com/Camunda-Community-Hub/community/blob/main/extension-lifecycle.md#stable-)
@@ -88,7 +88,7 @@ Here are some example applications:
 We officially support the following JDKs:
 * JDK 8 (LTS)
 * JDK 11 (LTS)
-* JDK 15 (the latest version supported by Micronaut)
+* JDK 16 (the latest version supported by Micronaut)
 
 ## Dependency Management
 
@@ -102,7 +102,7 @@ You have the following options to integrate the Camunda integration:
 
   Add the dependency to the build.gradle file:
   ```groovy
-  implementation("info.novatec:micronaut-camunda-bpm-feature:0.23.0")
+  implementation("info.novatec:micronaut-camunda-bpm-feature:1.0.0")
   runtimeOnly("com.h2database:h2")
   ```
   </details>
@@ -115,7 +115,7 @@ You have the following options to integrate the Camunda integration:
   <dependency>
     <groupId>info.novatec</groupId>
     <artifactId>micronaut-camunda-bpm-feature</artifactId>
-    <version>0.23.0</version>
+    <version>1.0.0</version>
   </dependency>
   <dependency>
     <groupId>com.h2database</groupId>
@@ -207,7 +207,7 @@ datasources:
 after adding the appropriate driver as a dependency:
 
 ```groovy
-runtimeOnly("org.postgresql:postgresql:42.2.18")
+runtimeOnly("org.postgresql:postgresql:42.2.22")
 ```
 
 ### Connection Pool with HikariCP
@@ -340,6 +340,36 @@ Further Information:
 * See [Configuration Properties](#properties) on how to enable basic authentication for REST, create a default user, or disable the redirect.
 * Enabling the REST API or the Webapps impacts the startup time. Depending on your hardware it increases by around 500-1000 milliseconds.
 
+### Advanced Webapps Configuration
+The security of the Webapps can be configured with the following properties:
+<details>
+  <summary>Click to show configuration options.</summary>
+
+| Prefix                | Property          | Default                                      | Description            |
+|-----------------------|------------------|----------------------------------------------|------------------------|
+| camunda.webapps.header-security | .xss-protection-disabled | false | The header can be entirely disabled if set to true. |
+|                       | .xss-protection-option| BLOCK | The allowed set of values: BLOCK - If the browser detects a cross-site scripting attack, the page is blocked completely; SANITIZE - If the browser detects a cross-site scripting attack, the page is sanitized from suspicious parts (value 0). Note: Is ignored when xss-protection-disabled is set to true and cannot be set in conjunction with xss-protection-value |
+|                       | .xss-protection-value| 1; mode=block | A custom value for the header can be specified. Is ignored when xss-protection-disabled is set to true and cannot be set in conjunction with xss-protection-option. |
+|                       | .content-security-policy-disabled | false| The header can be entirely disabled if set to true. |
+|                       | .content-security-policy-value | base-uri 'self' | A custom value for the header can be specified. Note: Property is ignored when content-security-policy-disabled is set to true. |
+|                       | .content-type-options-disabled | false | The header can be entirely disabled if set to true. |
+|                       | .content-type-options-value | | A custom value for the header can be specified. Note: Property is ignored when content-security-policy-disabled is set to true. |
+|                       | .hsts-disabled | true | Set to false to enable the header. |
+|                       | .hsts-max-age | 31536000 | Amount of seconds, the browser should remember to access the webapp via HTTPS. Note: Is ignored when hstsDisabled is true, Cannot be set in conjunction with hstsValue, and allows a maximum value of 2^31-1. |
+|                       | .hsts-include-subdomains-disabled | true | HSTS is additionally to the domain of the webapp enabled for all its subdomains. Note: Is ignored when hstsDisabled is true and cannot be set in conjunction with hstsValue. |
+|                       | .hsts-value | max-age=31536000 | A custom value for the header can be specified. Note: Is ignored when hstsDisabled is true and cannot be set in conjunction with hstsMaxAge or hstsIncludeSubdomainsDisabled. |
+| camunda.webapps.csrf  | .target-origin | | Sets the application expected deployment domain. |
+|                       | .deny-status | | Sets the HTTP response status code used for a denied request. |
+|                       | .random-class | | Sets the name of the class used to generate tokens. |
+|                       | .entry-points | | Sets additional URLs that will not be tested for the presence of a valid token. |
+|                       | .enable-secure-cookie | false | If true, the cookie flag Secure is enabled. |
+|                       | .enable-same-site-cookie | true | If set to false, the cookie flag SameSite is disabled. The default value of the cookie is LAX and it can be changed via same-site-cookie-option configuration property. |
+|                       | .same-site-cookie-option | | Can be configured either to STRICT or LAX. Note: Is ignored when enable-same-site-cookie is set to false and cannot be set in conjunction with same-site-cookie-value. |
+|                       | .same-site-cookie-value | | A custom value for the cookie property. Note: Is ignored when enable-same-site-cookie is set to false and cannot be set in conjunction with same-site-cookie-option. |
+|                       | .cookie-name | | A custom value to change the cookie name. Default ist 'XSRF-Token'. Note: Please make sure to additionally change the cookie name for each webapp (e.g. Cockpit) separately. |
+
+</details>
+
 ## Camunda Enterprise Edition (EE)
 ### Add Maven Coordinates
 
@@ -397,7 +427,7 @@ on how to do that. Keep in mind using the correct version of the libraries.
 
 In `build.gradle`:
 ```groovy
-implementation("info.novatec:micronaut-camunda-bpm-feature:0.23.0") {
+implementation("info.novatec:micronaut-camunda-bpm-feature:1.0.0") {
     exclude group: 'org.camunda.bpm.webapp', module: 'camunda-webapp-webjar'
     exclude group: 'org.camunda.bpm', module: 'camunda-engine'
 }
@@ -414,7 +444,7 @@ In `pom.xml`:
 <dependency>
   <groupId>info.novatec</groupId>
   <artifactId>micronaut-camunda-bpm-feature</artifactId>
-  <version>0.23.0</version>
+  <version>1.0.0</version>
   <exclusions>
     <exclusion>
       <groupId>org.camunda.bpm.webapp</groupId>
@@ -687,13 +717,17 @@ See also a test in our example application: [HelloWorldProcessTest](/micronaut-c
 
 When using Gradle we recommend the [Micronaut Application Plugin](https://github.com/micronaut-projects/micronaut-gradle-plugin/blob/master/README.md#micronaut-application-plugin)'s `dockerBuild` task to create a layered Docker image.
 
-Jetty by default only listens on the "localhost" interface. Therefore, you need to configure it to listen on all interfaces by adding the following to your `build.gradle`:
+<details>
+<summary>Workaround for Jetty on Micronaut 2.4.x</summary>
+
+In Micronaut 2.4.x Jetty by default only listened on the "localhost" interface - this has been fixed in Micronaut 2.5.x. For Micronaut 2.4.x you needed to configure Jetty to listen on all interfaces by adding the following to your `build.gradle`:
 
 ```groovy
 dockerfile {
     args.set(['-Dmicronaut.server.host=0.0.0.0'])
 }
 ```
+</details>
 
 Build the Docker image:
 
@@ -792,22 +826,24 @@ Here is a complete example: [HelloWorldProcessTest](/micronaut-camunda-bpm-examp
 
 # 📚Releases
 
-The list of [releases](https://github.com/NovatecConsulting/micronaut-camunda-bpm/releases) contains a detailed changelog.
+The list of [releases](https://github.com/camunda-community-hub/micronaut-camunda-bpm/releases) contains a detailed changelog.
 
-We use [Semantic Versioning](https://semver.org/) which does allow incompatible changes before release 1.0.0 but we try to minimize them. Until now only [v0.18.0](https://github.com/NovatecConsulting/micronaut-camunda-bpm/releases/tag/v0.18.0) made use of this exception.
+We use [Semantic Versioning](https://semver.org/) which does allow incompatible changes before release 1.0.0 but we try to minimize them. Until now only [v0.18.0](https://github.com/camunda-community-hub/micronaut-camunda-bpm/releases/tag/v0.18.0) made use of this exception.
 
 The following compatibility matrix shows the officially supported Micronaut and Camunda versions for each release.
 Other combinations might also work but have not been tested.
 
 | Release |Micronaut | Camunda |
 |--------|-------|--------|
-| 0.23.0 | 2.4.3 | 7.15.0 |
+|  1.0.0 | 2.5.9 | 7.15.0 |
 
 <details>
 <summary>Click to see older releases</summary>
 
 | Release |Micronaut | Camunda |
 |--------|-------|--------|
+| 0.24.0 | 2.5.1 | 7.15.0 |
+| 0.23.0 | 2.4.3 | 7.15.0 |
 | 0.22.0 | 2.4.1 | 7.14.0 |
 | 0.21.0 | 2.4.1 | 7.14.0 |
 | 0.20.0 | 2.4.0 | 7.14.0 |
@@ -843,7 +879,7 @@ Other combinations might also work but have not been tested.
 
 
 Download of Releases:
-* [GitHub Artifacts](https://github.com/NovatecConsulting/micronaut-camunda-bpm/releases)
+* [GitHub Artifacts](https://github.com/camunda-community-hub/micronaut-camunda-bpm/releases)
 * [Maven Central Artifacts](https://search.maven.org/artifact/info.novatec/micronaut-camunda-bpm-feature)
 
 # 📆Publications
@@ -857,10 +893,10 @@ Download of Releases:
 
 This open source project is being developed by [Novatec Consulting GmbH](https://www.novatec-gmbh.de/en/) with the support of the open source community.
 
-If you have any questions or ideas feel free to create an [issue](https://github.com/NovatecConsulting/micronaut-camunda-bpm/issues) or contact us via GitHub Discussions or mail.
+If you have any questions or ideas feel free to create an [issue](https://github.com/camunda-community-hub/micronaut-camunda-bpm/issues) or contact us via GitHub Discussions or mail.
 
 We love listening to your feedback, and of course also discussing the project roadmap and possible use cases with you!
 
 You can reach us:
-* [GitHub Discussions](https://github.com/NovatecConsulting/micronaut-camunda-bpm/discussions)
+* [GitHub Discussions](https://github.com/camunda-community-hub/micronaut-camunda-bpm/discussions)
 * [mailto:micronaut-camunda@novatec-gmbh.de](mailto:micronaut-camunda@novatec-gmbh.de)
